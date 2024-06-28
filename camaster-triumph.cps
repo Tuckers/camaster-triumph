@@ -1,15 +1,3 @@
-/**
-  Copyright (C) 2012-2023 by Autodesk, Inc.
-  All rights reserved.
-
-  CAMaster with support for WinCNC and Yaskawa controls post processor configuration.
-
-  $Revision: 44072 cf74c0f9ab26e6f9a2194cd24061a7a34ca67f6c $
-  $Date: 2023-06-15 06:24:28 $
-
-  FORKID {A2F27A48-C40A-4F54-98B4-5157E339F1D0}
-*/
-
 description = "CAMaster for Triumph workshop";
 vendor = "CAMaster";
 vendorUrl = "http://www.camaster.com";
