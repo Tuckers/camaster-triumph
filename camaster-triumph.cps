@@ -10,14 +10,14 @@
   FORKID {A2F27A48-C40A-4F54-98B4-5157E339F1D0}
 */
 
-description = "CAMaster ATC with WinCNC or Yaskawa control";
+description = "CAMaster for Triumph workshop";
 vendor = "CAMaster";
 vendorUrl = "http://www.camaster.com";
-legal = "Copyright (C) 2012-2023 by Autodesk, Inc.";
+legal = "Modified - T. Spofford June 2024";
 certificationLevel = 2;
 minimumRevision = 45845;
 
-longDescription = "CAMaster post with support for a WinCNC or Yaskawa control and an automatic tool changer. Enable the 'Use tool changer' property for support of the ATC.";
+longDescription = "Disable the 'Use tool changer' property during export";
 
 extension = "tap";
 setCodePage("ascii");
@@ -743,8 +743,6 @@ function onSection() {
         "DIAMETER = " + xyzFormat.format(tool.diameter) + "  ");
     if (getProperty("useToolCall") && !tool.getManualToolChange()) {
       writeToolBlock("T" + toolFormat.format(tool.number));
-    } else {
-      writeToolBlock(mFormat.format(0));
     }
     if (tool.comment) {
       writeComment(tool.comment);
@@ -996,10 +994,6 @@ function onCycleEnd() {
   if (!cycleExpanded) {
     writeBlock(gCycleModal.format(80));
     zOutput.reset();
-    writeBlock("G53 Z");
-    writeBlock("M5");
-    writeBlock("G53 P2");
-
   }
 }
 
@@ -1358,9 +1352,7 @@ function onCommand(command) {
     }
     return;
   case COMMAND_STOP_SPINDLE:
-    if (getProperty("useToolCall")) {
-      writeBlock(mFormat.format(5));
-    }
+    writeBlock(mFormat.format(5));
     return;
   case COMMAND_ORIENTATE_SPINDLE:
     if (getProperty("useToolCall")) {
@@ -1467,13 +1459,9 @@ function writeRetract() {
 
 function onClose() {
   onCommand(COMMAND_COOLANT_OFF);
+  writeBlock(gFormat.format(53) + " Z"); // retract
   onCommand(COMMAND_STOP_SPINDLE);
-
-  writeRetract(Z); // retract
-  // writeBlock(gFormat.format(28) + "Z"); // retract
+  writeBlock(gFormat.format(53) + " P1"); // home
   zOutput.reset();
-
   setWorkPlane(new Vector(0, 0, 0)); // reset working plane
-
-  // writeBlock(gFormat.format(28)); // home XYZ
 }
